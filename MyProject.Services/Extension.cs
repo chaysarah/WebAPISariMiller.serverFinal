@@ -12,7 +12,7 @@ namespace MyProject.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddDbContext<IContext, MyDBContext>();
+           // services.AddDbContext<IContext, MyDBContext>();
             services.AddRepositories();
             services.AddAutoMapper(typeof(Mapping));
             services.AddScoped<IChildService, ChildService>();

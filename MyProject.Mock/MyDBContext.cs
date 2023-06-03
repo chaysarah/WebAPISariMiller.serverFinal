@@ -14,6 +14,12 @@ namespace MyProject.Context
 
         public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebAPISariMillerDb;Trusted_Connection=True;");
+        public MyDBContext(DbContextOptions<MyDBContext> options)
+        : base(options)
+        {
+
+        }
+
+       // protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=WebAPISariMillerDb;Trusted_Connection=True;");
     }
 }

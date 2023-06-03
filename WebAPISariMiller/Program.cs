@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyProject.Context;
 using MyProject.Repositories.Interfaces;
 using MyProject.Services;
@@ -18,12 +19,30 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 
 builder.Services.AddServices();
-builder.Services.AddDbContext<IContext, MyDBContext>();
+
+var serverVersion = new MySqlServerVersion(new Version(8, 0));
+
+var mySqlConnectionStr = builder.Configuration["DBConnectionString"];
+builder.Services.AddDbContextPool<IContext,MyDBContext>(options =>
+{
+    options.UseMySql(
+        mySqlConnectionStr,
+        ServerVersion.AutoDetect(mySqlConnectionStr),
+        options => options.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: System.TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null)
+        );
+});
+
+//builder.Services.AddDbContext<IContext, MyDBContext>(options =>
+   // options.UseMySql(builder.Configuration["DBConnectionString"],serverVersion));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
